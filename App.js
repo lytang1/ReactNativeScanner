@@ -9,8 +9,10 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableOpacity
 } from 'react-native';
+import QRCodeScanner from 'react-native-qrcode-scanner';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -21,6 +23,11 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+  onSuccess(e) {
+    Linking
+      .openURL(e.data)
+      .catch(err => console.error('An error occured', err));
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -33,6 +40,21 @@ export default class App extends Component<Props> {
         <Text style={styles.instructions}>
           {instructions}
         </Text>
+        <View>
+          <QRCodeScanner
+            onRead={this.onSuccess.bind(this)}
+            topContent={
+              <Text style={styles.centerText}>
+                Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
+              </Text>
+            }
+            bottomContent={
+              <TouchableOpacity style={styles.buttonTouchable}>
+                <Text style={styles.buttonText}>OK. Got it!</Text>
+              </TouchableOpacity>
+            }
+          />
+        </View>
       </View>
     );
   }
